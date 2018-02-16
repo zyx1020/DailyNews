@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">Daily News</string>
-    <string name="top">Top</string>
-    <string name="us_news">U.S.</string>
     <string name="news_title">What happens?</string>
     <string name="news_description">dakjwrhqwohweewofh dnaksnd wqkejhwed fnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn</string>
+    <string name="top">Top</string>
+    <string name="tech">Technology</string>
+    <string name="music">Music</string>
+    <string name="sport">Sport</string>
+    <string name="health">Health</string>
 </resources>
