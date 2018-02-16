@@ -1,5 +1,7 @@
 package com.xingxing.android.dailynews;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
@@ -19,6 +21,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity {
     private TextView news;
@@ -31,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
 
         Button tops = (Button) findViewById(R.id.top_news);
         Button us = (Button) findViewById(R.id.us_news);
-        news = (TextView) findViewById(R.id.contents);
 
         requestQueue = Volley.newRequestQueue(this);//this means this activity
 
@@ -50,12 +59,13 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(JSONObject response) {
                 try {
                     JSONArray articles = response.getJSONArray("articles");
+                    List<String[]> newsList = new ArrayList<>();
                     for (int i = 0; i < articles.length(); i++) {
-                        JSONObject aNews = articles.getJSONObject(i);
-                        String title = aNews.getString("title");
-                        String description = aNews.getString("description");
+                        JSONObject article = articles.getJSONObject(i);
+                        String[] newsDetails = new String[] {article.getString("title"), article.getString("description"), article.getString("urlToImage")};
+                        newsList.add(newsDetails);
+                        // TODO: show list of news with TextView.setText() & ImageView.setImageBitmap()
 
-                        news.append(title + "\n" + description + "\n\n");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -69,7 +79,22 @@ public class MainActivity extends AppCompatActivity {
                 toast.show();
             }
         });
-
-        requestQueue.add(request);
     }
+
+
+    public Bitmap getBitmapFromURL(String src) {
+        try {
+            URL url = new URL(src);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.connect();
+            InputStream inputStream = conn.getInputStream();
+            return BitmapFactory.decodeStream(inputStream);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
