@@ -5,18 +5,20 @@
         android:id="@+id/top_news"
         android:orderInCategory="1"
         android:title="@string/top"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom"
+        android:onClick="onOptionsItemSelected"/>
     <item
         android:id="@+id/tech_news"
         android:orderInCategory="2"
         android:title="@string/tech"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom"
+        android:onClick="onOptionsItemSelected"/>
     <item
         android:id="@+id/music_news"
         android:orderInCategory="3"
         android:title="@string/music"
         app:showAsAction="ifRoom"
-        />
+        android:onClick="onOptionsItemSelected" />
     <item
         android:id="@+id/sport_news"
         android:orderInCategory="3"

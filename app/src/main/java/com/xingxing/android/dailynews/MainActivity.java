@@ -1,13 +1,12 @@
 package com.xingxing.android.dailynews;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -21,39 +20,67 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
-    private TextView news;
-    private RequestQueue requestQueue;
-
+    RequestQueue requestQueue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button tops = (Button) findViewById(R.id.top_news);
-        Button us = (Button) findViewById(R.id.us_news);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar);
+        toolbar.setTitle("NNEEWW");
+        toolbar.inflateMenu(R.menu.menu_main);
 
         requestQueue = Volley.newRequestQueue(this);//this means this activity
 
-        tops.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                jsonParse();
-            }
-        });
+        //auto load when app start
+        String initUrl = "https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=9fcc5d04d4964e3295098e985ced26d5";
+        jsonParse(initUrl);
+
     }
 
-    private void jsonParse() {
-        String url = "https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=9fcc5d04d4964e3295098e985ced26d5";
+    public boolean onCreateOptionMenu(Menu menu) {
+        // inflate the menu; add items to action bar if present
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle action bar clicks.
+        int id = item.getItemId();
+        String urlToFetchFrom = "";
+        switch (id) {
+            case R.id.top_news:
+                showMsg("TTop");
+                urlToFetchFrom = "https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=9fcc5d04d4964e3295098e985ced26d5";
+                break;
+            case R.id.tech_news:
+                showMsg("TTech");
+                urlToFetchFrom = "https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=9fcc5d04d4964e3295098e985ced26d5";
+                break;
+            case R.id.music_news:
+                showMsg("MMusic");
+                urlToFetchFrom = "https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=9fcc5d04d4964e3295098e985ced26d5";
+                break;
+            case R.id.sport_news:
+                showMsg("SSport");
+                urlToFetchFrom = "https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=9fcc5d04d4964e3295098e985ced26d5";
+                break;
+            case R.id.health_news:
+                showMsg("HHealth");
+                urlToFetchFrom = "https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=9fcc5d04d4964e3295098e985ced26d5";
+                break;
+        }
+        jsonParse(urlToFetchFrom);
+        return onOptionsItemSelected(item);
+    }
+
+    public void jsonParse(String url) {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -64,9 +91,9 @@ public class MainActivity extends AppCompatActivity {
                         JSONObject article = articles.getJSONObject(i);
                         String[] newsDetails = new String[] {article.getString("title"), article.getString("description"), article.getString("urlToImage")};
                         newsList.add(newsDetails);
-                        // TODO: show list of news with TextView.setText() & ImageView.setImageBitmap()
-
                     }
+                    showNews(newsList);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -79,22 +106,18 @@ public class MainActivity extends AppCompatActivity {
                 toast.show();
             }
         });
+        requestQueue.add(request);
     }
 
-
-    public Bitmap getBitmapFromURL(String src) {
-        try {
-            URL url = new URL(src);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.connect();
-            InputStream inputStream = conn.getInputStream();
-            return BitmapFactory.decodeStream(inputStream);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public void showNews(List<String[]> newsList) {
+        CustomAdapter customAdapter = new CustomAdapter(this, newsList);
+        ListView newsListView = (ListView) findViewById(R.id.newsList);
+        newsListView.setAdapter(customAdapter);
     }
 
+    private void showMsg(String msg) {
+        Toast toast = Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
+        toast.show();
+    }
 }
