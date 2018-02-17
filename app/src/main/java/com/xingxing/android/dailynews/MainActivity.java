@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
         toolbar.inflateMenu(R.menu.menu_main);
 
         requestQueue = Volley.newRequestQueue(this);//this means this activity
-
         //auto load when app start
         String initUrl = "https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=9fcc5d04d4964e3295098e985ced26d5";
         jsonParse(initUrl);

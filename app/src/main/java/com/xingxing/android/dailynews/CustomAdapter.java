@@ -1,8 +1,6 @@
 package com.xingxing.android.dailynews;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +8,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 /**
@@ -46,11 +39,12 @@ public class CustomAdapter extends ArrayAdapter {
         // load data into row view
         titleView.setText(currNews[0]);
         descView.setText(currNews[1]);
-        // TODO: image loading takes much time, so we use doInBackground()
-
+        // image loading takes much time, so we use doInBackground()
+        new ImageLoadTask(imgView).execute(currNews[2]);
+        //TODO: image not showing or not visible, but bitmap has produced, why?
         return singleNewsView;
     }
-
+/**
     private Bitmap getBitmapFromURL(String src) {
         try {
             URL url = new URL(src);
@@ -67,4 +61,5 @@ public class CustomAdapter extends ArrayAdapter {
         }
         return null;
     }
+ */
 }
